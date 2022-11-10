@@ -1,0 +1,16 @@
+{
+    "name": "WIFramework.Test",
+    "rootNamespace": "",
+    "references": [
+        "GUID:b6a8e7ebd2cb06345890058676e74205"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
