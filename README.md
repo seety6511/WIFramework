@@ -8,7 +8,7 @@ WIBehaviour<br>
 InputManager<br>
   *GetCurrentInputKeyCode : 현재 입력되고 있는 KeyCode를 얻을 수 있습니다.
   
-개발 중<br>
+개발 중
 1. CanvasBase, PanelBase, UIBase를 통한 UI 계층화 및 지역화 서포트 (2022-11-22 개발 중)<br>
 1-2. WIBehaviour를 대상으로 한 약한 싱글턴 기능. (2022-11-22 테스트중)<br>
 
