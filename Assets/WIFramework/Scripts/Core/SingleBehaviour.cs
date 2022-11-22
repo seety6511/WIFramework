@@ -5,11 +5,10 @@ namespace WIFramework.Util
 {
     public class SingleBehaviour : WIBehaviour
     {
-        protected override void Awake()
+        protected void Awake()
         {
             if (AddWI(this))
             {
-                base.Awake();
             }
         }
     }
