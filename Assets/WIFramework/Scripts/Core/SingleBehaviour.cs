@@ -7,7 +7,7 @@ namespace WIFramework.Util
     {
         protected void Awake()
         {
-            if (AddWI(this))
+            if (RegistUniqueWI(this))
             {
             }
         }

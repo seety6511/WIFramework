@@ -8,22 +8,37 @@ using System;
 
 namespace WIFramework.Core
 {
-    /// <summary>
-    /// Awake 사용 및 수정 금지. Awake 대신 Initialize Override 하여 사용바람.
-    /// </summary>
     public class WIBehaviour : MonoBehaviour
     {
+        public List<PanelBase> childPanels
+        {
+            get;
+            private set;
+        } = new List<PanelBase>();
+        #region Static Methods
+        public static List<PanelBase> wiPanels
+        {
+            get;
+            private set;
+        } = new List<PanelBase>();
+
+        public static List<CanvasBase> wiCanvas
+        {
+            get;
+            private set;
+        } = new List<CanvasBase>();
+
+        public static List<WIBehaviour> wiObjects
+        {
+            get;
+            private set;
+        } = new List<WIBehaviour>();  
         public static Dictionary<Type, WIBehaviour> uniqueWI
         {
             get;
             private set;
         } = new Dictionary<Type, WIBehaviour>();
-        public static List<WIBehaviour> wiList
-        {
-            get;
-            private set;
-        } = new List<WIBehaviour>();
-        protected static bool AddWI(WIBehaviour obj)
+        protected static bool RegistUniqueWI(WIBehaviour obj)
         {
             var t = obj.GetType();
             if (uniqueWI.TryGetValue(t, out var origin))
@@ -35,10 +50,11 @@ namespace WIFramework.Core
                 }
                 return false;
             }
-            wiList.Add(obj);
             uniqueWI.Add(t, obj);
             return true;
         }
+        #endregion
+
         #region Dependencies
         public virtual void Initialize()
         {
@@ -49,12 +65,6 @@ namespace WIFramework.Core
         /// <summary>
         /// 자식으로 있는 PanelBase 캐싱
         /// </summary>
-        public List<PanelBase> childPanels
-        {
-            get;
-            private set;
-        } = new List<PanelBase>();
-
         void Inject_ChildPanels()
         {
             //GetChildPanels(transform);
@@ -69,27 +79,6 @@ namespace WIFramework.Core
                         f.SetValue(this, c);
                     }
                 }
-            }
-        }
-
-        [Obsolete]
-        void GetChildPanels(Transform root)
-        {
-            if (root == null)
-                return;
-
-            int childCount = root.childCount;
-            if (childCount == 0)
-                return;
-            for (int i = 0; i < childCount; ++i)
-            {
-                var child = root.GetChild(i);
-                if (child.TryGetComponent<PanelBase>(out var panel))
-                {
-                    childPanels.Add(panel);
-                    //Debug.Log($"FindChildPanel:{panel.gameObject.name}");
-                }
-                GetChildPanels(child);
             }
         }
         /// <summary>
@@ -129,7 +118,6 @@ namespace WIFramework.Core
         }
 
         /// <summary>
-        /// Canvas Inject.
         /// CanvasBase는 Unique한 ID 이므로 위치에 상관 없이 의존성을 주입해줍니다.
         /// </summary>
         /// <param name="q"></param>
@@ -143,7 +131,7 @@ namespace WIFramework.Core
                 if (canvas != null && canvas is CanvasBase)
                 {
                     //Debug.Log($"Find! : {canvas.name}");
-                    AddWI(canvas as CanvasBase);
+                    RegistUniqueWI(canvas as CanvasBase);
                     f.SetValue(this, canvas as CanvasBase);
                 }
                 //if (!uniqueWI.TryGetValue(f.FieldType, out var canvas))
@@ -168,13 +156,6 @@ namespace WIFramework.Core
                 //}
             }
         }
-
-
-        #endregion
-
-        #region UnityMethods
-        protected virtual void OnEnable() { }
-        protected virtual void OnDisable() { }
         #endregion
 
         #region Action Methods
@@ -186,7 +167,27 @@ namespace WIFramework.Core
         {
             gameObject.SetActive(false);
         }
-    
         #endregion
+
+        [Obsolete]
+        void GetChildPanels(Transform root)
+        {
+            if (root == null)
+                return;
+
+            int childCount = root.childCount;
+            if (childCount == 0)
+                return;
+            for (int i = 0; i < childCount; ++i)
+            {
+                var child = root.GetChild(i);
+                if (child.TryGetComponent<PanelBase>(out var panel))
+                {
+                    childPanels.Add(panel);
+                    //Debug.Log($"FindChildPanel:{panel.gameObject.name}");
+                }
+                GetChildPanels(child);
+            }
+        }
     }
 }
