@@ -8,7 +8,7 @@ WIBehaviour<br>
   *PanelBase 의존성 주입<br>
 
 WIManager<br>
- *IKeyboardActor interface 를 통해 현재 입력받은 키를 전달.<br>
+ *IKeyboardActor(interface)들 에게 현재 입력받은 키를 전달.<br>
 
 InputManager<br>
   *GetCurrentInputKeyCode : 현재 입력되고 있는 KeyCode를 얻을 수 있습니다.<br>
