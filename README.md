@@ -3,12 +3,17 @@
 
 현재 지원 되는 기능<br>
 WIBehaviour<br>
-  *UIBehaviour 자동 캐싱 : 인스펙터나 스크립트에서 Button,Image와 같은 UGUI 들을 따로 캐싱할 필요가 없습니다.
+  *UIBehaviour 의존성 주입<br>
+  *CanvasBase 의존성 주입<br>
+  *PanelBase 의존성 주입<br>
+
+WIManager<br>
+ *IKeyboardActor interface 를 통해 현재 입력받은 키를 전달.<br>
 
 InputManager<br>
-  *GetCurrentInputKeyCode : 현재 입력되고 있는 KeyCode를 얻을 수 있습니다.
+  *GetCurrentInputKeyCode : 현재 입력되고 있는 KeyCode를 얻을 수 있습니다.<br>
   
-개발 중
+개발 중<br>
 1. CanvasBase, PanelBase, UIBase를 통한 UI 계층화 및 지역화 서포트 (2022-11-22 개발 중)<br>
 1-2. WIBehaviour를 대상으로 한 약한 싱글턴 기능. (2022-11-22 테스트중)<br>
 
@@ -21,3 +26,7 @@ InputManager<br>
   *CanvasBase 는 생성과 동시에 캐싱되고, 아무데서나 접근 가능합니다.<br>
   *PanelBase 는 자신의 부모 CanvasBase에 캐싱되고, 같은 CanvasBase 내부에서는 아무데서나 접근 가능하지만, 외부에서는 CanvasBase를 통해 접근해야 합니다.<br>
   *UIBase 는 특별히 캐싱해두는 주체가 없습니다. <br>
+  *위의 구조는 강한 연결의 구조가 아닙니다.<br>
+  *구조를 수립할때 도움이 될 만할 것 같은 단위로 묶은 추상적인 구조입니다.<br>
+  *다만 이 프로젝트 내부의 기능은 모두 위의 구조를 따라서 개발되므로 이외의 사용법에서는 버그가 발생할 소지가 있습니다.<br>
+  
