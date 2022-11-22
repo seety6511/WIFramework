@@ -28,8 +28,11 @@ namespace WIFramework.Core
             var t = obj.GetType();
             if (uniqueWI.TryGetValue(t, out var origin))
             {
-                Debug.LogError($"DuplicateUniqueWI:{obj.gameObject}, {origin.gameObject}");
-                Destroy(obj);
+                if (obj != origin)
+                {
+                    Debug.LogError($"DuplicateUniqueWI:{obj.gameObject}, {origin.gameObject}");
+                    Destroy(obj);
+                }
                 return false;
             }
             wiList.Add(obj);
@@ -37,13 +40,57 @@ namespace WIFramework.Core
             return true;
         }
         #region Dependencies
-        /// <summary>
-        /// Awake 사용하지 마세요.
-        /// </summary>
-        protected virtual void Awake()
+        public virtual void Initialize()
         {
             Inject_Canvas();
+            Inject_ChildPanels();
             Inject_UIBehaviour();
+        }
+        /// <summary>
+        /// 자식으로 있는 PanelBase 캐싱
+        /// </summary>
+        public List<PanelBase> childPanels
+        {
+            get;
+            private set;
+        } = new List<PanelBase>();
+
+        void Inject_ChildPanels()
+        {
+            //GetChildPanels(transform);
+            childPanels = GetComponentsInChildren<PanelBase>().ToList();
+            var fields = GetType().GetFields();
+            foreach (var f in fields)
+            {
+                foreach (var c in childPanels)
+                {
+                    if (f.FieldType.Equals(c.GetType()))
+                    {
+                        f.SetValue(this, c);
+                    }
+                }
+            }
+        }
+
+        [Obsolete]
+        void GetChildPanels(Transform root)
+        {
+            if (root == null)
+                return;
+
+            int childCount = root.childCount;
+            if (childCount == 0)
+                return;
+            for (int i = 0; i < childCount; ++i)
+            {
+                var child = root.GetChild(i);
+                if (child.TryGetComponent<PanelBase>(out var panel))
+                {
+                    childPanels.Add(panel);
+                    //Debug.Log($"FindChildPanel:{panel.gameObject.name}");
+                }
+                GetChildPanels(child);
+            }
         }
         /// <summary>
         /// 자식으로 있는 UI 오브젝트들 중 멤버변수의 이름과 동일한 것을 찾아 자동 캐싱 해줍니다.
@@ -52,7 +99,7 @@ namespace WIFramework.Core
         {
             var uiElements = GetComponentsInChildren<UIBehaviour>().ToList();
             var wiType = GetType();
-            Debug.Log($"Start Injecting UIBehaviour:{wiType.Name}");
+            //Debug.Log($"Start Injecting UIBehaviour:{wiType.Name}");
             var targetFields = wiType.GetFields();
             foreach (var field in targetFields)
             {
@@ -75,7 +122,7 @@ namespace WIFramework.Core
                 if (targetUIObject == null)
                     continue;
 
-                Debug.Log($"Find Dependency Object:{targetUIObject.name}");
+                //Debug.Log($"Find Dependency Object:{targetUIObject.name}");
                 field.SetValue(this, targetUIObject);
             }
 
@@ -88,41 +135,40 @@ namespace WIFramework.Core
         /// <param name="q"></param>
         void Inject_Canvas()
         {
-            Debug.Log($"Start Injecting WICanvas:{GetType().Name}");
+            //Debug.Log($"Start Injecting WICanvas:{GetType().Name}");
             var fields = GetType().GetFields();
             foreach (var f in fields)
             {
-                if (!f.FieldType.Equals(typeof(CanvasBase)))
+                var canvas = FindObjectOfType(f.FieldType);
+                if (canvas != null && canvas is CanvasBase)
                 {
-                    continue;
+                    //Debug.Log($"Find! : {canvas.name}");
+                    AddWI(canvas as CanvasBase);
+                    f.SetValue(this, canvas as CanvasBase);
                 }
+                //if (!uniqueWI.TryGetValue(f.FieldType, out var canvas))
+                //{
+                //    var findCanvas = FindObjectOfType(f.FieldType);
+                //    if (findCanvas == null)
+                //    {
+                //        Debug.Log($"Not Found... {f.FieldType.Name}");
+                //        continue;
+                //    }
+                //    AddWI(findCanvas as CanvasBase);
+                //}
 
-                if (!uniqueWI.TryGetValue(f.FieldType, out var canvas))
-                {
-                    //foreach (var c in allCanvas)
-                    //{
-                    //    if (f.FieldType.Equals(c.GetType()))
-                    //    {
-                    //        AddWI(c);
-                    //        break;
-                    //    }
-                    //}
-                }
-
-                if (!uniqueWI.TryGetValue(f.FieldType, out canvas))
-                {
-                    Debug.Log($"Injecting WICanvas!:{GetType().Name}/{f.FieldType.Name}");
-                    f.SetValue(this, canvas);
-                }
-                else
-                {
-                    Debug.LogError($"Not Found WICanvas! {f.FieldType.Name}");
-                }
+                //if (!uniqueWI.TryGetValue(f.FieldType, out canvas))
+                //{
+                //    Debug.Log($"Injecting WICanvas!:{GetType().Name}/{f.FieldType.Name}");
+                //    f.SetValue(this, canvas);
+                //}
+                //else
+                //{
+                //    Debug.LogError($"Not Found WICanvas! {f.FieldType.Name}");
+                //}
             }
         }
-        public virtual void ActionTest(KeyCode q)
-        {
-        }
+
 
         #endregion
 
@@ -140,7 +186,7 @@ namespace WIFramework.Core
         {
             gameObject.SetActive(false);
         }
-        public virtual void Initialize() { }
+    
         #endregion
     }
 }

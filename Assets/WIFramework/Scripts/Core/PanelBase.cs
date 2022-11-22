@@ -7,16 +7,16 @@ namespace WIFramework.UI
     /// <summary>
     /// For Unique UI Group
     /// </summary>
-    public class PanelBase : SingleBehaviour
+    public class PanelBase : WIBehaviour
     {
         /// <summary>
         /// rootCanvas == null ? WorldSpacePanel : ChildPanel
         /// 가장 가까이 있는 Canvas가 rootCanvas가 된다.
         /// </summary>
         [SerializeField] CanvasBase rootCanvas;
-        protected override void Awake()
+        protected  void Awake()
         {
-            base.Awake();
+            //base.Awake();
             FindRootCanvas();
         }
         void FindRootCanvas()
