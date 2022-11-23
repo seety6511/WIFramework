@@ -4,11 +4,28 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using WIFramework.UI;
 using WIFramework.Core;
+using WIFramework.Core.Manager;
+using UnityEditor;
 
 namespace WIFramework.Util
 {
     public static class Wtil
     {
+#if UNITY_EDITOR
+        [MenuItem("Tools/CreateWIManager #'")]
+        public static void CreateWIManager()
+        {
+            var wiManager = GameObject.FindObjectOfType<WIManager>();
+            if (wiManager != null)
+            {
+                Debug.Log("Already WIManager");
+                return;
+            }
+
+            wiManager = GameObject.Instantiate(Resources.Load<WIManager>("WIFramework/WIManager"));
+            wiManager.gameObject.name = "WIManager";
+        }
+#endif
         public static T2[] ArrayConvertor<T, T2>(T[] origin) where T : WIBehaviour where T2 : WIBehaviour
         {
             T2[] result = new T2[origin.Length];
@@ -17,6 +34,11 @@ namespace WIFramework.Util
                 result[i] = origin[i] as T2;
             }
             return result;
+        }
+
+        public static T2 PanelTypeConvertor<T, T2>(T origin) where T : WIBehaviour where T2 : WIBehaviour
+        {
+            return origin as T2;
         }
 
         /// <summary>
