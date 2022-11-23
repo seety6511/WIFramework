@@ -1,35 +1,29 @@
 # WIFramework<br>
-유니티- 친화적으로 유니티- 코딩을 편하게 만들어 주는 라이브러리입니다.
+<b>유니티- 친화적으로 유니티- 코딩을 편하게 만들어 주는 라이브러리입니다.<br></b>
+<t>@기능 및 구조 구현에 있어서 필요한 준비물들을 대신 준비해주는 것이 주 목적입니다.<br>
 
-현재 지원 되는 기능<br>
-WIBehaviour<br>
-  *UIBehaviour 의존성 주입<br>
-  *CanvasBase 의존성 주입<br>
-  *PanelBase 의존성 주입<br>
+<b>지원 되는 기능</b>
+1. DI : 의존성 주입에 관련된 기능입니다. 아래는 WIManager를 통해 Inject 되는 Type의 리스트 입니다.<br>
+<t>1-1. SingleBehaviour<br>
+<t>1-2. UIBehaviour<br>
+2. SingleBehaviour : WIManager 에서 관리되는 약한 수준의 싱글턴입니다.<br>
+<t>2-1. TrashBehaviour : 만약 이미 존재하는 Type의 SingleBehaviour가 생성되었을경우, 이 클래스로 변환시킵니다.<br>
+3. IKeyboardActor : 현재 유저가 입력하고 있는 KeyCode를 받는 interface. 이벤트를 필요로 하는 클래스에서 상속받으면 됩니다. <br>
+<t>3-1. IGetKey : Input.GetKey<br>
+<t>3-2. IGetKeyUp : Input.GetKeyUp<br>
+<t>3-3. IGetKeyDown : Input.GetKeyDown<br>
+4. SDictionary : 단순한 Dictionary Serializer class 입니다. 사용시 Inspector에서 내부가 보입니다.<br>
 
-WIManager<br>
- *IKeyboardActor(interface)들 에게 현재 입력받은 키를 전달.<br>
+<b>지원 하고 싶은 기능</b>
+1. Array DI : Type만을 대상으로 하여 다수의 Instance를 DI 해주는 기능입니다. <br>
+<t> 1-1 UIBehaviour : ChildObjects 만이 대상입니다.<br>
+<t> 1-2 WIBehaviour : Scene 전체가 대상입니다.<br>
+2. Action Logger : 지정한 클래스를 대상으로 이벤트가 있을 때 마다 기록하여 텍스트 파일로 만드는 기능입니다. <br>
+3. Labeling : Hierarchy 상의 Object 들의 name을 기준으로 그룹화 시켜주는 기능입니다. <br>
 
-InputManager<br>
-  *GetCurrentInputKeyCode : 현재 입력되고 있는 KeyCode를 얻을 수 있습니다.<br>
-  
-개발 중<br>
-1. CanvasBase, PanelBase, UIBase를 통한 UI 계층화 및 지역화 서포트 (2022-11-22 개발 중)<br>
-1-2. WIBehaviour를 대상으로 한 약한 싱글턴 기능. (2022-11-22 테스트중)<br>
+<b>테스트 중 인 기능<b/>
+1. Lender : 특정한 객체를 대상으로 소유권의 개념을 적용시켜주는 기능입니다. <br>
+2. MaterialExtractor : 모델링에 내장된 Material을 자동으로 Extract하고, 한 폴더에 모델과 함께 모아주는 기능입니다. <br>
 
-
-기본 구조<br>
-  *WIBehaviour : MonoBehaviour를 대체하는 클래스입니다. 구조 구현에 도움을 주는 기능들은 이 클래스를 기반으로 짜여집니다.<br>
-  *CanvasBase : Unique한 UI 그룹을 의미하는 클래스 입니다. 씬 상에 여러 인스턴스가 존재하면 안됩니다. 이를 위한 약한 싱글턴 기능이 내장됩니다.<br>
-  *PanelBase : Unique하지 않은 UI 그룹을 의미하는 클래스 입니다. 씬 상에 여러 인스턴스가 존재해도 되지만, 같은 CanvasBase 내에는 중복으로 존재할 수 없습니다.<br>
-  *UIBase : 중복되는 UI가 여러개 필요할 경우에 사용하는 클래스 입니다. ex) HPBar. <br>
-  *CanvasBase 는 생성과 동시에 캐싱되고, 아무데서나 접근 가능합니다.<br>
-  *PanelBase 는 자신의 부모 CanvasBase에 캐싱되고, 같은 CanvasBase 내부에서는 아무데서나 접근 가능하지만, 외부에서는 CanvasBase를 통해 접근해야 합니다.<br>
-  *UIBase 는 특별히 캐싱해두는 주체가 없습니다. <br>
-  ![WIFrameworkStructure](https://user-images.githubusercontent.com/46316988/203210053-d5b6ad36-13f1-44c4-9e00-ff9f65ffd87e.png)
-  *구조 개념도 그림... 입니다. <br>
-  *Canvas는 Unique 해야 하며, Panel은 자신의 부모 Canvas에 대해서만 Unique 하면 됩니다. UIbase의 경우 자유롭습니다.
-  *위의 구조는 강한 연결의 구조가 아닙니다.<br>
-  *구조를 수립할때 도움이 될 만할 것 같은 단위로 묶은 추상적인 구조입니다.<br>
-  *다만 이 프로젝트 내부의 기능은 모두 위의 구조를 따라서 개발되므로 이외의 사용법에서는 버그가 발생할 소지가 있습니다.<br>
-  
+<B>!Notification!</B><br>
+<t>- Unity Cycle에 종속적입니다. WIManager가 Scene에 없으면 정상 작동하지 않습니다.<br> 
