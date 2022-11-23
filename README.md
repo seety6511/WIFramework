@@ -21,7 +21,7 @@
 2. Action Logger : 지정한 클래스를 대상으로 이벤트가 있을 때 마다 기록하여 텍스트 파일로 만드는 기능입니다. <br>
 3. Labeling : Hierarchy 상의 Object 들의 name을 기준으로 그룹화 시켜주는 기능입니다. <br>
 
-<b>테스트 중 인 기능<b/>
+<b>테스트 중 인 기능</b>
 1. Lender : 특정한 객체를 대상으로 소유권의 개념을 적용시켜주는 기능입니다. <br>
 2. MaterialExtractor : 모델링에 내장된 Material을 자동으로 Extract하고, 한 폴더에 모델과 함께 모아주는 기능입니다. <br>
 
