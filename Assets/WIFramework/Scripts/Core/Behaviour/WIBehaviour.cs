@@ -12,15 +12,6 @@ namespace WIFramework.Core
 {
     public class WIBehaviour : MonoBehaviour
     {
-        bool isAwake;
-        private void Awake()
-        {
-            if (isAwake)
-                return;
-
-            FindObjectOfType<WIManager>().RuntimeRegist(this);
-            isAwake = true;
-        }
         public virtual void Initialize()
         {
         }
