@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using WIFramework.Core.Behaviour;
 using WIFramework.Util;
 
@@ -11,10 +13,10 @@ namespace WIFramework.Core.Manager
     [DefaultExecutionOrder(int.MinValue)]
     public class WIManager : MonoBehaviour
     {
-        [SerializeField] List<WIBehaviour> wiList = new List<WIBehaviour>();
-        [SerializeField] SDictionary<WIBehaviour, GameObject> wiTable = new SDictionary<WIBehaviour, GameObject>();
-        [SerializeField] SDictionary<Type, SingleBehaviour> singleWiList = new SDictionary<Type, SingleBehaviour>();
-        void Regist(WIBehaviour wi)
+        [SerializeField] static List<WIBehaviour> wiList = new List<WIBehaviour>();
+        [SerializeField] static SDictionary<WIBehaviour, GameObject> wiTable = new SDictionary<WIBehaviour, GameObject>();
+        [SerializeField] static SDictionary<Type, SingleBehaviour> singleWiList = new SDictionary<Type, SingleBehaviour>();
+        static void Regist(WIBehaviour wi)
         {
             if (wiList.Contains(wi))
                 return;
@@ -35,7 +37,7 @@ namespace WIFramework.Core.Manager
                     break;
             }
         }
-        bool RegistSingle(WIBehaviour wi)
+        static bool RegistSingle(WIBehaviour wi)
         {
             if (wi is not SingleBehaviour)
                 return false;
@@ -59,12 +61,12 @@ namespace WIFramework.Core.Manager
             }
             return false;
         }
-        void Injecting(WIBehaviour wi)
+        static void Injecting(WIBehaviour wi)
         {
             InjectUIBehaviour(wi);
             InjectSingleBehaviour(wi);
         }
-        public void RuntimeRegist(WIBehaviour wi)
+        static void RuntimeRegist(WIBehaviour wi)
         {
             Regist(wi);
             RegistSingle(wi);
@@ -72,12 +74,18 @@ namespace WIFramework.Core.Manager
             wi.Initialize();
         }
 
+        public static new T Instantiate<T>(T origin) where T : WIBehaviour
+        {
+            var copy = GameObject.Instantiate(origin);
+            RuntimeRegist(copy);
+            return copy;
+        }
+
         private void Awake()
         {
             Debug.Log($"WIManager Awake");
             Debug.Log($"Find WIBehaviours...");
-
-            var wbs = Resources.FindObjectsOfTypeAll<WIBehaviour>();
+            var wbs = GameObject.FindObjectsOfType<WIBehaviour>();
             foreach(var wi in wbs)
             {
                 Regist(wi);
@@ -94,7 +102,7 @@ namespace WIFramework.Core.Manager
             }
             codes = Enum.GetValues(typeof(KeyCode));
         }
-        void InjectSingleBehaviour(WIBehaviour wi)
+        static void InjectSingleBehaviour(WIBehaviour wi)
         {
             var fields = wi.GetType().GetFields();
             foreach(var f in fields)
@@ -112,7 +120,7 @@ namespace WIFramework.Core.Manager
         /// <summary>
         /// 자식으로 있는 UI 오브젝트들 중 멤버변수의 이름과 동일한 것을 찾아 자동 캐싱 해줍니다.
         /// </summary>
-        void InjectUIBehaviour(WIBehaviour wi)
+        static void InjectUIBehaviour(WIBehaviour wi)
         {
             var uiElements = wi.GetComponentsInChildren<UIBehaviour>();
             
@@ -148,33 +156,33 @@ namespace WIFramework.Core.Manager
         }
         private void Update()
         {
-            PostingKeyboard();
+            DetectingKey();
         }
 
         #region Input
         Array codes;
-        List<IGetKey> getKeyActors = new List<IGetKey>();
-        List<IGetKeyUp> getKeyUpActors = new List<IGetKeyUp>();
-        List<IGetKeyDown> getKeyDownActors = new List<IGetKeyDown>();
-        void PostingKeyboard()
+        static List<IGetKey> getKeyActors = new List<IGetKey>();
+        static List<IGetKeyUp> getKeyUpActors = new List<IGetKeyUp>();
+        static List<IGetKeyDown> getKeyDownActors = new List<IGetKeyDown>();
+        void DetectingKey()
         {
             foreach (KeyCode k in codes)
             {
                 if (Input.GetKey(k))
                 {
-                    MailingKeyboardActor(k, getKeyActors);
+                    Posting(k, getKeyActors);
                 }
                 if (Input.GetKeyDown(k))
                 {
-                    MailingKeyboardActor(k, getKeyDownActors);
+                    Posting(k, getKeyDownActors);
                 }
                 if (Input.GetKeyUp(k))
                 {
-                    MailingKeyboardActor(k, getKeyUpActors);
+                    Posting(k, getKeyUpActors);
                 }
             }
         }
-        void MailingKeyboardActor<T>(KeyCode key, List<T> actorList) where T : IKeyboardActor
+        void Posting<T>(KeyCode key, List<T> actorList) where T : IKeyboardActor
         {
             foreach (var actor in actorList)
             {
