@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using WIFramework.UI;
-using WIFramework.Core;
-using WIFramework.Core.Manager;
+﻿using System.Collections.Generic;
 using UnityEditor;
+using UnityEngine;
 
-namespace WIFramework.Util
+namespace WIFramework
 {
     public static class Wtil
     {
@@ -26,6 +21,29 @@ namespace WIFramework.Util
             wiManager.gameObject.name = "WIManager";
         }
 #endif
+        /// <summary>
+        /// 하위의 모든(Deactive포함) child를 순회하며 T Type의 컴포넌트가 붙어있는지 검사하고, 있다면 container를 통해 내보낸다.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="root"></param>
+        /// <param name="container"></param>
+        public static void Search<T>(this Transform root, ref List<T> container)
+        {
+            if (root.TryGetComponents<T>(out var value))
+            {
+                container.AddRange(value);
+            }
+            var childCount = root.childCount;
+            for (int i = 0; i < childCount; ++i)
+            {
+                Search(root.GetChild(i), ref container);
+            }
+        }
+        public static bool TryGetComponents<T>(this Transform root, out T[] result)
+        {
+            result = root.GetComponents<T>();
+            return result.Length > 0;
+        }
         public static T2[] ArrayConvertor<T, T2>(T[] origin) where T : WIBehaviour where T2 : WIBehaviour
         {
             T2[] result = new T2[origin.Length];
