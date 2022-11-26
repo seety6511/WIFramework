@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using WIFramework.Core;
+using WIFramework;
 
-public class TestBehaviour2 : WIBehaviour
+public class TestBehaviour2 : SingleBehaviour
 {
     public override void Initialize()
     {
