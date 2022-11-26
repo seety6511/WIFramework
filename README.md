@@ -8,14 +8,15 @@
 <t>1-2. UIBehaviour<br>
 2. SingleBehaviour : WIManager 에서 관리되는 약한 수준의 싱글턴입니다.<br>
 <t>2-1. TrashBehaviour : 만약 이미 존재하는 Type의 SingleBehaviour가 생성되었을경우, 이 클래스로 변환시킵니다.<br>
+<t>2-1-1. 변환되기전 이전 클래스와, 변환된 이유의 원인 클래스(원본)를 추적할 수 있도록 저장합니다. <br>
 3. IKeyboardActor : 현재 유저가 입력하고 있는 KeyCode를 받는 interface. 이벤트를 필요로 하는 클래스에서 하단의 인터페이스를 상속받으면 됩니다. <br>
 <t>3-1. IGetKey : Input.GetKey<br>
 <t>3-2. IGetKeyUp : Input.GetKeyUp<br>
 <t>3-3. IGetKeyDown : Input.GetKeyDown<br>
+<t>3-4. 키 조합을 인식합니다.<br>
 4. SDictionary : 단순한 Dictionary Serializer class 입니다. 사용시 Inspector에서 내부가 보입니다.<br>
 5. WIManager : 기능 사용에 반드시 필요한 class 입니다 <br>
 <t>5-1. Instantiate(WIBehaviour) : WIBehaviour 생성시 이 함수를 통해서 생성해야합니다. <br>
-6. RuntimeRegist : Runtime 중에도 WIBehaviour의 생성, 삭제를 관리할 수 있게 해주는 기능입니다. <br>
 
 <b>지원 하고 싶은 기능</b>
 1. Array DI : Type만을 대상으로 하여 다수의 Instance를 DI 해주는 기능입니다. <br>
