@@ -1,9 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.UI;
-using WIFramework.Core;
-
+using WIFramework;
 public class Test_InjectTest : WIBehaviour
 {
     public Test_Player player;

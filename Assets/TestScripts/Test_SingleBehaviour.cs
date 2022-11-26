@@ -1,5 +1,4 @@
-using WIFramework.Core;
-using WIFramework.Util;
+using WIFramework;
 
 public class Test_SingleBehaviour : SingleBehaviour
 {

@@ -1,21 +1,17 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
-using UnityEngine.EventSystems;
-using WIFramework.Util;
-using WIFramework.UI;
-using System.Linq;
-using System;
-using UnityEngine.Pool;
-using WIFramework.Core.Manager;
 
-namespace WIFramework.Core
+namespace WIFramework
 {
-    public class WIBehaviour : MonoBehaviour
+    public partial class WIBehaviour : MonoBehaviour
     {
         public virtual void Initialize()
         {
         }
 
+        private void OnDestroy()
+        {
+            WIManager.Unregist(this);
+        }
         #region Action Methods
         public virtual void Active()
         {
