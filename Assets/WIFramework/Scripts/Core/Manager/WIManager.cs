@@ -60,10 +60,10 @@ namespace WIFramework
                             continue;
 
                         Debug.Log($"Tracking Missing DI : {l.name}_{detailType.Name}");
-                        diMissingTable[l].SetValue(l, sb);
-                        diMissingTable.Remove(l);
+                        InjectSingleBehaviour(l);
                     }
-                    diWaitingTable.Remove(detailType);
+                    if (diWaitingTable[detailType].Count == 0)
+                        diWaitingTable.Remove(detailType);
                 }
             }
 
@@ -84,11 +84,48 @@ namespace WIFramework
                     getKeyDownActors.Add(gd);
             }
 
-            InjectUIBehaviour(wi);
+            Inject<UIBehaviour>(wi);
+            InjectTransform<Transform>(wi);
+            InjectTransform<RectTransform>(wi);
             InjectSingleBehaviour(wi);
             wi.Initialize();
         }
-        static void InjectUIBehaviour(WIBehaviour wi)
+        static void InjectTransform<T>(WIBehaviour wi) where T : Transform
+        {
+            var uiElements = wi.GetComponentsInChildren<T>();
+
+            if (uiElements == null || uiElements.Length == 0)
+                return;
+
+            var wiType = wi.GetType();
+            //Debug.Log($"Start Injecting UIBehaviour:{wiType.Name}");
+            var targetFields = wiType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+            foreach (var field in targetFields)
+            {
+                T targetUIObject = null;
+                foreach (var e in uiElements)
+                {
+                    //Debug.Log($"Compare Name. A={e.name} B={field.Name}");
+                    if (e.name.Equals(field.Name))
+                    {
+                        //Debug.Log($"Type Check. A={e.GetType().Name}, B={field.FieldType.Name}");
+                        if (e.GetType().Equals(field.FieldType))
+                        {
+                            //Debug.Log($"InjectField={wiType.Name}:{field.Name}");
+                            targetUIObject = e;
+                            break;
+                        }
+                    }
+                }
+                if (targetUIObject == null)
+                    continue;
+
+                //Debug.Log($"Find Dependency Object:{targetUIObject.name}");
+                field.SetValue(wi, targetUIObject);
+            }
+        }
+
+        static void Inject<T>(WIBehaviour wi) where T : UIBehaviour
         {
             var uiElements = wi.GetComponentsInChildren<UIBehaviour>();
             
@@ -97,7 +134,7 @@ namespace WIFramework
 
             var wiType = wi.GetType();
             //Debug.Log($"Start Injecting UIBehaviour:{wiType.Name}");
-            var targetFields = wiType.GetFields();
+            var targetFields = wiType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
             foreach (var field in targetFields)
             {
                 UIBehaviour targetUIObject = null;
@@ -122,11 +159,10 @@ namespace WIFramework
                 field.SetValue(wi, targetUIObject);
             }
         }
-        static Dictionary<WIBehaviour, FieldInfo> diMissingTable = new Dictionary<WIBehaviour, FieldInfo>();
         static Dictionary<Type, List<WIBehaviour>> diWaitingTable = new Dictionary<Type, List<WIBehaviour>>();
         static void InjectSingleBehaviour(WIBehaviour wi)
         {
-            var fields = wi.GetType().GetFields();
+            var fields = wi.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
             foreach(var f in fields)
             {
                 if(f.FieldType.BaseType.Equals(typeof(SingleBehaviour)))
@@ -137,13 +173,12 @@ namespace WIFramework
                     }
                     else
                     {
-                        Debug.Log($"Missing Behaviour");
+                        //Debug.Log($"Missing Behaviour={wi.name}");
                         if (!diWaitingTable.TryGetValue(f.FieldType, out var waitingList))
                         {
                             diWaitingTable.Add(f.FieldType, new List<WIBehaviour>());
                         }
                         diWaitingTable[f.FieldType].Add(wi);
-                        diMissingTable.Add(wi, f);
                     }
                 }
             }
