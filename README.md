@@ -17,6 +17,7 @@
 4. SDictionary : 단순한 Dictionary Serializer class 입니다. 사용시 Inspector에서 내부가 보입니다.<br>
 5. WIManager : 기능 사용에 반드시 필요한 class 입니다 <br>
 <t>5-1. Instantiate(WIBehaviour) : WIBehaviour 생성시 이 함수를 통해서 생성해야합니다. <br>
+6. DITracking : Inject를 받지 못했을 경우, 해당 하는 클래스가 생성된 시점에 추적하여 Inject를 해주는 기능입니다. <br>
 
 <b>지원 하고 싶은 기능</b>
 1. Array DI : Type만을 대상으로 하여 다수의 Instance를 DI 해주는 기능입니다. <br>
