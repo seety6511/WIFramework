@@ -6,6 +6,8 @@
 1. DI : 의존성 주입에 관련된 기능입니다. 아래는 WIManager를 통해 Inject 되는 Type의 리스트 입니다.<br>
 <t>1-1. SingleBehaviour<br>
 <t>1-2. UIBehaviour<br>
+<t>1-3. Tranform <br>
+<t>1-4. RectTransform<br>
 2. SingleBehaviour : WIManager 에서 관리되는 약한 수준의 싱글턴입니다.<br>
 <t>2-1. TrashBehaviour : 만약 이미 존재하는 Type의 SingleBehaviour가 생성되었을경우, 이 클래스로 변환시킵니다.<br>
 <t>2-1-1. 변환되기전 이전 클래스와, 변환된 이유의 원인 클래스(원본)를 추적할 수 있도록 저장합니다. <br>
