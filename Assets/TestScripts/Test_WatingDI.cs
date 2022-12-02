@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using WIFramework;
 
 public class Test_WatingDI : WIBehaviour, IGetKeyDown
@@ -19,4 +21,7 @@ public class Test_WatingDI : WIBehaviour, IGetKeyDown
             WIManager.Instantiate(prefab);
         }
     }
+
+   
 }
+
