@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -6,21 +8,11 @@ namespace WIFramework
 {
     public static class Wtil
     {
-#if UNITY_EDITOR
-        [MenuItem("Tools/CreateWIManager #'")]
-        public static void CreateWIManager()
+        public static FieldInfo[] GetAllFields(this Type target)
         {
-            var wiManager = GameObject.FindObjectOfType<WIManager>();
-            if (wiManager != null)
-            {
-                Debug.Log("Already WIManager");
-                return;
-            }
-
-            wiManager = GameObject.Instantiate(Resources.Load<WIManager>("WIFramework/WIManager"));
-            wiManager.gameObject.name = "WIManager";
+            return target.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
         }
-#endif
+
         /// <summary>
         /// 하위의 모든(Deactive포함) child를 순회하며 T Type의 컴포넌트가 붙어있는지 검사하고, 있다면 container를 통해 내보낸다.
         /// </summary>
