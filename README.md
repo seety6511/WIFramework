@@ -1,36 +1,40 @@
-# WIFramework<br>
-<b>유니티- 친화적으로 유니티- 코딩을 편하게 만들어 주는 라이브러리입니다.<br></b>
-<t>@기능 및 구조 구현에 있어서 필요한 준비물들을 대신 준비해주는 것이 주 목적입니다.<br>
+# WIFramework 1.0.0
+## 유니티- 친화적으로 유니티- 코딩을 편하게 만들어 주는 라이브러리.
+> * 기능 및 구조 구현에 있어서 필요한 준비물들을 대신 준비해주는 것이 주 목적입니다.
+* * *
 
-<b>지원 되는 기능</b>
-1. DI : 의존성 주입에 관련된 기능입니다. 아래는 WIManager를 통해 Inject 되는 Type의 리스트 입니다.<br>
-<t>1-1. SingleBehaviour<br>
-<t>1-2. UIBehaviour<br>
-<t>1-3. Tranform <br>
-<t>1-4. RectTransform<br>
-2. SingleBehaviour : WIManager 에서 관리되는 약한 수준의 싱글턴입니다.<br>
-<t>2-1. TrashBehaviour : 만약 이미 존재하는 Type의 SingleBehaviour가 생성되었을경우, 이 클래스로 변환시킵니다.<br>
-<t>2-1-1. 변환되기전 이전 클래스와, 변환된 이유의 원인 클래스(원본)를 추적할 수 있도록 저장합니다. <br>
-3. IKeyboardActor : 현재 유저가 입력하고 있는 KeyCode를 받는 interface. 이벤트를 필요로 하는 클래스에서 하단의 인터페이스를 상속받으면 됩니다. <br>
-<t>3-1. IGetKey : Input.GetKey<br>
-<t>3-2. IGetKeyUp : Input.GetKeyUp<br>
-<t>3-3. IGetKeyDown : Input.GetKeyDown<br>
-<t>3-4. 키 조합을 인식합니다.<br>
-4. SDictionary : 단순한 Dictionary Serializer class 입니다. 사용시 Inspector에서 내부가 보입니다.<br>
-5. WIManager : 기능 사용에 반드시 필요한 class 입니다 <br>
-<t>5-1. Instantiate(WIBehaviour) : WIBehaviour 생성시 이 함수를 통해서 생성해야합니다. <br>
-6. DITracking : Inject를 받지 못했을 경우, 해당 하는 클래스가 생성된 시점에 추적하여 Inject를 해주는 기능입니다. <br>
+## HowToUse
+> MonoBehaviour 의 대체 클래스인 WIBehaviour를 중심으로 구성된 라이브러리 입니다.   
+> 라이브러리지만 이름이 Framework 인 이유는 주요 기능들이 WIBehaviour를 중심으로 돌아가기 때문입니다.   
+> 권장하는 사용법을 꽤 엄격하게 따라야(하지만 강제되지는 않는) 정상적인 기능을 하므로 Framework로 명명했습니다.   
+> 배우지 않아도 사용할 수 있는 라이브러리를 지향합니다. 
+* * *
 
-<b>지원 하고 싶은 기능</b>
-1. Array DI : Type만을 대상으로 하여 다수의 Instance를 DI 해주는 기능입니다. <br>
-<t> 1-1 UIBehaviour : ChildObjects 만이 대상입니다.<br>
-<t> 1-2 WIBehaviour : Scene 전체가 대상입니다.<br>
-2. Action Logger : 지정한 클래스를 대상으로 이벤트가 있을 때 마다 기록하여 텍스트 파일로 만드는 기능입니다. <br>
-3. Labeling : Hierarchy 상의 Object 들의 name을 기준으로 그룹화 시켜주는 기능입니다. <br>
+## 1.0.0
+* **DI (Dependency Injection)**
+> * 특정 class 를 대상으로 진행되는 의존성 주입 기능입니다.
+> * 지원 되는 대상은 아래와 같습니다.
+>> + **UIBehaviour, SingleBehaviour, Transform, RectTransform** 
+>> * UIBehaviour : UGUI Component(Button, Image, Text, TMP...) 입니다. 변수명과 씬 상의 오브젝트 이름이 같아야 합니다.
+>> * Transforms : 변수 명과 씬 상의 오브젝트 이름이 같아야 합니다. 자식오브젝트들을 대상으로 합니다.
+> * DITracking
+>> + 초기에 못한 의존성 주입 대상이 Instancing 되었을 때 주입을 시켜줍니다.
+* **LowSingleton (SingleBehaviour)**
+> * 라이브러리 내 에서는 SingleBehaviour class 입니다.
+> * 클래스 별로 생성에 제한을 두지 않고 WIManager 내부에서 단일 Instance를 보장해 줍니다.
+> * 만일 중복되는 객체가 생성되었을 경우 해당 객체를 TrashBehaviour 로 변환 시키고 이전의 정보와 Original을 트래킹 합니다.
+* **KeyboardHooker**
+> 키 입력을 받아 특정 Interface 를 상속받은 객체들에게 넘겨주는 기능입니다.
+> 대상이 되는 Interface들은 아래와 같습니다.
+>> + **IGetKey, IGetKeyUp, IGetKeyDown**
+* **SDictionary**
+> * Dictionary Serialize 를 위한 래핑 클래스 입니다.
+* * *
 
-<b>테스트 중 인 기능</b>
-1. Lender : 특정한 객체를 대상으로 소유권의 개념을 적용시켜주는 기능입니다. <br>
-2. MaterialExtractor : 모델링에 내장된 Material을 자동으로 Extract하고, 한 폴더에 모델과 함께 모아주는 기능입니다. <br>
+## 지원 하고 싶은 기능
+> 1. Array DI : 특정 Type의 class들을 대상으로 하여 다수의 Instance를 DI 해주는 기능입니다. 
+> 2. Action Logger : 지정한 클래스를 대상으로 이벤트가 있을 때 마다 기록하여 텍스트 파일로 만드는 기능입니다. 
+> 3. Labeling : Hierarchy 상의 Object 들의 name을 기준으로 그룹화 시켜주는 기능입니다. 
+> 4. Lender : 특정한 객체를 대상으로 소유권의 개념을 적용시켜주는 기능입니다.
+> 6. MaterialExtractor : 모델링에 내장된 Material을 자동으로 Extract하고, 한 폴더에 모델과 함께 모아주는 기능입니다. 
 
-<B>!Notification!</B><br>
-<t>- Unity Cycle에 종속적입니다. WIManager가 Scene에 없으면 정상 작동하지 않습니다.<br> 
