@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -8,22 +8,22 @@ using WIFramework.Util;
 
 namespace WIFramework
 {
-    [DefaultExecutionOrder(int.MinValue)]
-    public partial class WIManager : MonoBehaviour
+    //[DefaultExecutionOrder(int.MinValue)]
+    public static class WIManager
     {
-        Array codes;
+        
         static SDictionary<WIBehaviour, GameObject> wiTable = new SDictionary<WIBehaviour, GameObject>();
         static SDictionary<Type, SingleBehaviour> singleWiTable = new SDictionary<Type, SingleBehaviour>();
-        static HashSet<IGetKey> getKeyActors = new HashSet<IGetKey>();
-        static HashSet<IGetKeyUp> getKeyUpActors = new HashSet<IGetKeyUp>();
-        static HashSet<IGetKeyDown> getKeyDownActors = new HashSet<IGetKeyDown>();
+        internal static HashSet<IGetKey> getKeyActors = new HashSet<IGetKey>();
+        internal static HashSet<IGetKeyUp> getKeyUpActors = new HashSet<IGetKeyUp>();
+        internal static HashSet<IGetKeyDown> getKeyDownActors = new HashSet<IGetKeyDown>();
         static void MoveToTrash(WIBehaviour wi, SingleBehaviour origin)
         {
             var trash = wi.gameObject.TryAddComponent<TrashBehaviour>();
             trash.prevBehaviourType = wi.GetType().Name;
             trash.originBehaviour = origin; 
             wiTable.Remove(wi);
-            Destroy(wi);
+            GameObject.Destroy(wi);
         }
         public static void Unregist(WIBehaviour wi)
         {
@@ -41,37 +41,41 @@ namespace WIFramework
                     getKeyDownActors.Remove(gd);
             }
         }
-        static void Regist(WIBehaviour wi)
+        static void RegistSingleBehaviour(WIBehaviour wi)
         {
             var detailType = wi.GetType();
-            if(wi is SingleBehaviour sb)
+            if (wi is SingleBehaviour sb)
             {
                 if (singleWiTable.TryGetValue(detailType, out var origin))
                 {
-                    MoveToTrash(wi, origin);
-                    return;
+                    if (origin != wi)
+                    {
+                        MoveToTrash(wi, origin);
+                        return;
+                    }
                 }
                 singleWiTable.Add(detailType, sb);
-                if(diWaitingTable.TryGetValue(detailType, out var list))
+                if (diWaitingTable.TryGetValue(detailType, out var list))
                 {
-                    foreach(var l in list)
+                    foreach (var l in list)
                     {
                         if (l is null)
                             continue;
 
-                        Debug.Log($"Tracking Missing DI : {l.name}_{detailType.Name}");
+                        //Debug.Log($"Tracking Missing DI : {l.name}_{detailType.Name}");
                         InjectSingleBehaviour(l);
                     }
+                    list = list.Where(l => l != null).ToList();
                     if (diWaitingTable[detailType].Count == 0)
                         diWaitingTable.Remove(detailType);
                 }
             }
-
+        }
+        public static void Regist(WIBehaviour wi)
+        {
             if (wiTable.ContainsKey(wi))
                 return;
-
             wiTable.Add(wi, wi.gameObject);
-
             if(wi is IKeyboardActor)
             {
                 if (wi is IGetKey gk)
@@ -83,6 +87,7 @@ namespace WIFramework
                 if (wi is IGetKeyDown gd)
                     getKeyDownActors.Add(gd);
             }
+            RegistSingleBehaviour(wi);
 
             Inject<UIBehaviour>(wi);
             InjectTransform<Transform>(wi);
@@ -99,7 +104,7 @@ namespace WIFramework
 
             var wiType = wi.GetType();
             //Debug.Log($"Start Injecting UIBehaviour:{wiType.Name}");
-            var targetFields = wiType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+            var targetFields = wiType.GetAllFields();//.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
             foreach (var field in targetFields)
             {
                 T targetUIObject = null;
@@ -134,7 +139,7 @@ namespace WIFramework
 
             var wiType = wi.GetType();
             //Debug.Log($"Start Injecting UIBehaviour:{wiType.Name}");
-            var targetFields = wiType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+            var targetFields = wiType.GetAllFields();//.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
             foreach (var field in targetFields)
             {
                 UIBehaviour targetUIObject = null;
@@ -162,7 +167,7 @@ namespace WIFramework
         static Dictionary<Type, List<WIBehaviour>> diWaitingTable = new Dictionary<Type, List<WIBehaviour>>();
         static void InjectSingleBehaviour(WIBehaviour wi)
         {
-            var fields = wi.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+            var fields = wi.GetType().GetAllFields();//.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
             foreach(var f in fields)
             {
                 if(f.FieldType.BaseType.Equals(typeof(SingleBehaviour)))
@@ -183,7 +188,7 @@ namespace WIFramework
                 }
             }
         }
-        public static new T Instantiate<T>(T origin) where T : WIBehaviour
+        public static T Instantiate<T>(T origin) where T : WIBehaviour
         {
             if (origin is null)
                 return null;
@@ -192,9 +197,8 @@ namespace WIFramework
             Regist(copy);
             return copy;
         }
-        private void Awake()
+        static void Awake()
         {
-            Debug.Log($"WIManager Awake");
             var roots = SceneManager.GetActiveScene().GetRootGameObjects();
             var tempList = new List<WIBehaviour>();
             for(int i = 0; i < roots.Length; ++i)
@@ -208,59 +212,18 @@ namespace WIFramework
             }
 
             Debug.Log($"Active WI : {wiTable.Count}");
-
-            codes = Enum.GetValues(typeof(KeyCode));
         }
-        private void OnDestroy()
+
+        static WIManager()
         {
-            Debug.Log($"WIManager Destroyed");
+            Debug.Log($"WISystem Awake");
             wiTable.Clear();
             singleWiTable.Clear();
             getKeyActors.Clear();
             getKeyUpActors.Clear();
             getKeyDownActors.Clear();
+            //Awake();
+            //EditorApplication.update += DetectingKey;
         }
-        
-        /// <summary>
-        /// 자식으로 있는 UI 오브젝트들 중 멤버변수의 이름과 동일한 것을 찾아 자동 캐싱 해줍니다.
-        /// </summary>
-        private void Update()
-        {
-            DetectingKey();
-        }
-        
-        #region Input
-
-        void DetectingKey()
-        {
-            foreach (KeyCode k in codes)
-            {
-                if (Input.GetKey(k))
-                {
-                    Posting(k, getKeyActors);
-                }
-                if (Input.GetKeyDown(k))
-                {
-                    Posting(k, getKeyDownActors);
-                }
-                if (Input.GetKeyUp(k))
-                {
-                    Posting(k, getKeyUpActors);
-                }
-            }
-        }
-        void Posting<T>(KeyCode key, HashSet<T> actorList) where T : IKeyboardActor
-        {
-            foreach (var actor in actorList)
-            {
-                if(actor is null)
-                {
-                    Debug.Log("A");
-                    continue;
-                }
-                actor.GetKey(key);
-            }
-        }
-        #endregion
     }
 }

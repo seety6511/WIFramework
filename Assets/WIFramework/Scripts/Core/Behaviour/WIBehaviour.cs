@@ -4,6 +4,10 @@ namespace WIFramework
 {
     public partial class WIBehaviour : MonoBehaviour
     {
+        void Awake()
+        {
+            WIManager.Regist(this);
+        }
         public virtual void Initialize()
         {
         }
