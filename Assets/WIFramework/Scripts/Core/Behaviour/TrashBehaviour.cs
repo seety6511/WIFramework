@@ -1,7 +1,7 @@
 ﻿namespace WIFramework
 {
-    public class TrashBehaviour : WIBehaviour
+    public class TrashBehaviour : MonoBehaviour
     {
-        public WIBehaviour originBehaviour;
+        public MonoBehaviour originBehaviour;
     }
 }

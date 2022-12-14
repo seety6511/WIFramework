@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using WIFramework;
 
-public class Player : WIBehaviour, IGetKey, ISingle
+public class Player : MonoBehaviour, IGetKey, ISingle
 {
     public float speed = 5f;
 
@@ -15,20 +15,6 @@ public class Player : WIBehaviour, IGetKey, ISingle
     protected RectTransform hand_5;
     Transform hand_6;
     RectTransform hand_7;
-
-    public override void Initialize()
-    {
-        base.Initialize();
-        Debug.Log($"{name}");
-        Debug.Log($"{hand}");
-        Debug.Log($"{hand_1}");
-        Debug.Log($"{hand_2}");
-        Debug.Log($"{hand_3}");
-        Debug.Log($"{hand_4}");
-        Debug.Log($"{hand_5}");
-        Debug.Log($"{hand_6}");
-        Debug.Log($"{hand_7}");
-    }
 
     public void GetKey(KeyCode key)
     {

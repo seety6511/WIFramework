@@ -36,7 +36,7 @@ namespace WIFramework
             result = root.GetComponents<T>();
             return result.Length > 0;
         }
-        public static T2[] ArrayConvertor<T, T2>(T[] origin) where T : WIBehaviour where T2 : WIBehaviour
+        public static T2[] ArrayConvertor<T, T2>(T[] origin) where T : MonoBehaviour where T2 : MonoBehaviour
         {
             T2[] result = new T2[origin.Length];
             for (int i = 0; i < result.Length; ++i)
@@ -46,7 +46,7 @@ namespace WIFramework
             return result;
         }
 
-        public static T2 PanelTypeConvertor<T, T2>(T origin) where T : WIBehaviour where T2 : WIBehaviour
+        public static T2 PanelTypeConvertor<T, T2>(T origin) where T : MonoBehaviour where T2 : MonoBehaviour
         {
             return origin as T2;
         }
