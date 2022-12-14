@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using WIFramework;
 
-public class MonsterSpawner : WIBehaviour
+public class MonsterSpawner : MonoBehaviour
 {
     public Monster prefab_Monster;
     public List<Monster> monsters = new List<Monster>();

@@ -5,16 +5,37 @@ using UnityEngine;
 using UnityEngine.LowLevel;
 namespace WIFramework
 {
-    public class KeyHooker
+    public class Hooker
     {
         static Array codes;
         internal static void Initialize()
         {
-            Debug.Log($"KeyHookerOn");
+            //Debug.Log($"KeyHookerOn");
             codes = Enum.GetValues(typeof(KeyCode));
-            PlayerLoopInterface.InsertSystemBefore(typeof(KeyHooker), DetectingKey, typeof(UnityEngine.PlayerLoop.PreUpdate.NewInputUpdate));
+            PlayerLoopInterface.InsertSystemAfter(typeof(Hooker), MonoTracking, typeof(UnityEngine.PlayerLoop.EarlyUpdate.UpdatePreloading));
+            PlayerLoopInterface.InsertSystemBefore(typeof(Hooker), DetectingKey, typeof(UnityEngine.PlayerLoop.PreUpdate.NewInputUpdate));
             //SetHook();
         }
+
+        static Queue<MonoBehaviour> registWatingQueue = new Queue<MonoBehaviour>(); 
+        static void MonoTracking()
+        {
+            if (!Application.isPlaying)
+                return;
+
+            while (registWatingQueue.Count > 0)
+            {
+                var curr = registWatingQueue.Dequeue();
+                if (curr != null)
+                    WIManager.Regist(curr);
+            }
+        }
+
+        internal static void RegistReady(MonoBehaviour monoBehaviour)
+        {
+            registWatingQueue.Enqueue(monoBehaviour);
+        }
+
         static void DetectingKey()
         {
             foreach (KeyCode k in codes)
@@ -45,5 +66,6 @@ namespace WIFramework
                 actor.GetKey(key);
             }
         }
+
     }
 }

@@ -23,7 +23,7 @@ namespace WIFramework
 
                 insertedSystems.Clear();
             };
-            KeyHooker.Initialize();
+            Hooker.Initialize();
         }
 
         private enum InsertType

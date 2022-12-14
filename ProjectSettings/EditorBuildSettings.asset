@@ -5,10 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: 
-    guid: d1c3109bdb54ad54c8a2b2838528e640
   - enabled: 1
-    path: Assets/Scene/DITrackingTest.unity
-    guid: b76f2eaf4c0475d44af599dd803b6e37
+    path: Assets/Examples/Total.unity
+    guid: e22810a3cc4706540b1253bdcfaf3809
   m_configObjects: {}

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using WIFramework;
 
-public class Monster : WIBehaviour
+public class Monster : MonoBehaviour
 {
-    [SerializeField] Player target;
+    public Player target;
+    public PlayerChild target2;
     public float speed = 5f;
 
     private void Update()
