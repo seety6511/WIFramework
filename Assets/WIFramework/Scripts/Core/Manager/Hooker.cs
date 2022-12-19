@@ -10,31 +10,33 @@ namespace WIFramework
         static Array codes;
         internal static void Initialize()
         {
-            //Debug.Log($"KeyHookerOn");
             codes = Enum.GetValues(typeof(KeyCode));
-            PlayerLoopInterface.InsertSystemAfter(typeof(Hooker), MonoTracking, typeof(UnityEngine.PlayerLoop.EarlyUpdate.UpdatePreloading));
+            //PlayerLoopInterface.InsertSystemAfter(typeof(Hooker), MonoTracking, typeof(UnityEngine.PlayerLoop.EarlyUpdate.UpdatePreloading));
             PlayerLoopInterface.InsertSystemBefore(typeof(Hooker), DetectingKey, typeof(UnityEngine.PlayerLoop.PreUpdate.NewInputUpdate));
             //SetHook();
         }
 
-        static Queue<MonoBehaviour> registWatingQueue = new Queue<MonoBehaviour>(); 
-        static void MonoTracking()
-        {
-            if (!Application.isPlaying)
-                return;
+        //static Queue<MonoBehaviour> registWatingQueue = new Queue<MonoBehaviour>(); 
+        //static void MonoTracking()
+        //{
+        //    if (!Application.isPlaying)
+        //        return;
 
-            while (registWatingQueue.Count > 0)
-            {
-                var curr = registWatingQueue.Dequeue();
-                if (curr != null)
-                    WIManager.Regist(curr);
-            }
-        }
+        //    while (registWatingQueue.Count > 0)
+        //    {
+        //        var curr = registWatingQueue.Dequeue();
+        //        if (curr != null)
+        //            WIManager.Regist(curr);
+        //    }
+        //}
 
-        internal static void RegistReady(MonoBehaviour monoBehaviour)
-        {
-            registWatingQueue.Enqueue(monoBehaviour);
-        }
+        //internal static void RegistReady(MonoBehaviour monoBehaviour)
+        //{
+        //    if (!Application.isPlaying)
+        //        return;
+
+        //    registWatingQueue.Enqueue(monoBehaviour);
+        //}
 
         static void DetectingKey()
         {
