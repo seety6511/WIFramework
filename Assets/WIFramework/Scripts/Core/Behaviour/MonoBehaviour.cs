@@ -1,9 +1,11 @@
 ﻿using WIFramework;
+
 public class MonoBehaviour : UnityEngine.MonoBehaviour
 {
-    public MonoBehaviour()
+    protected virtual void Awake()
     {
-        Hooker.RegistReady(this);
+        //Hooker.RegistReady(this);
+        WIManager.Regist(this);
     }
     public virtual void Initialize()
     {
@@ -13,4 +15,5 @@ public class MonoBehaviour : UnityEngine.MonoBehaviour
     {
         WIManager.Unregist(this);
     }
+
 }

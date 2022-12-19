@@ -12,10 +12,9 @@ namespace WIFramework
 
         private static List<PlayerLoopSystem> insertedSystems = new List<PlayerLoopSystem>();
 
-        [RuntimeInitializeOnLoadMethod]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         private static void Initialize()
         {
-
             PlayerLoopQuitChecker.GameQuitCallback += () =>
             {
                 foreach (var playerLoopSystem in insertedSystems)
