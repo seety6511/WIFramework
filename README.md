@@ -8,6 +8,14 @@
 > 배우지 않아도 사용할 수 있는 라이브러리를 지향합니다. 
 > 자세한 용법은 Asset/Example/Total.scene 내부에서 확인바랍니다.
 * * *
+### 1.3.0
+> * *변경점*
+>> + Regist 사이클을 다시 Awake부터 시작하도록 변경했습니다. 이제 Awake를 사용할 때 base.Awake()가 반드시 호출 되어야 합니다.
+> * **추가**
+>> + Label
+>>> - field에 붙여 사용하는 Attribute 입니다. Type과 Name(string) 을 대상으로 하여 DI를 진행합니다.
+>>> - field의 이름과 다른 오브젝트들도 타게팅하기 위해 만들었습니다.
+>>> - 대상은 여전히 Child Object 들로 한정합니다. 
 ### 1.2.0
 > * *변경점*
 >> + WIBehaviour -> MonoBehaviour. 더 이상 WIBehaviour로 따로 상속받을 필요 없습니다.
@@ -46,7 +54,6 @@
 ## 지원 하고 싶은 기능
 > 1. Array DI : 특정 Type의 class들을 대상으로 하여 다수의 Instance를 DI 해주는 기능입니다. 
 > 2. Action Logger : 지정한 클래스를 대상으로 이벤트가 있을 때 마다 기록하여 텍스트 파일로 만드는 기능입니다. 
-> 3. Labeling : Hierarchy 상의 Object 들의 name을 기준으로 그룹화 시켜주는 기능입니다. 
-> 4. Lender : 특정한 객체를 대상으로 소유권의 개념을 적용시켜주는 기능입니다.
-> 5. MaterialExtractor : 모델링에 내장된 Material을 자동으로 Extract하고, 한 폴더에 모델과 함께 모아주는 기능입니다. 
+> 3. Lender : 특정한 객체를 대상으로 소유권의 개념을 적용시켜주는 기능입니다.
+> 4. MaterialExtractor : 모델링에 내장된 Material을 자동으로 Extract하고, 한 폴더에 모델과 함께 모아주는 기능입니다. 
 
